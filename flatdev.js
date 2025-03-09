@@ -73,38 +73,51 @@ function showConditionalAlert(condition, trueMessage, falseMessage) {
 }
 
 // 텍스트를 입력받아 DIV를 추가하는 함수
-function addTextDiv(text, containerId = 'content', className = '') {
+function addTextDiv(text, className = '') {
   // 새로운 div 요소 생성
   const newDiv = document.createElement('div');
   
   // 텍스트 내용 설정
   newDiv.textContent = text;
   
-  // 클래스가 제공되었다면 추가
+  // 클래스 추가 처리
   if (className) {
-    newDiv.className = className;
+    // 문자열 배열인 경우
+    if (Array.isArray(className)) {
+      className.forEach(cls => {
+        if (cls && cls.trim() !== '') {
+          newDiv.classList.add(cls.trim());
+        }
+      });
+    } 
+    // 공백으로 구분된 문자열인 경우
+    else if (typeof className === 'string' && className.includes(' ')) {
+      const classNames = className.split(' ');
+      classNames.forEach(cls => {
+        if (cls && cls.trim() !== '') {
+          newDiv.classList.add(cls.trim());
+        }
+      });
+    }
+    // 단일 문자열인 경우
+    else if (typeof className === 'string') {
+      newDiv.className = className;
+    }
   }
   
-  // 컨테이너 요소 찾기
-  const container = document.getElementById(containerId);
-  
-  // 컨테이너가 존재하면 새 div 추가, 없으면 body에 추가
-  if (container) {
-    container.appendChild(newDiv);
-  } else {
-    document.body.appendChild(newDiv);
-  }
+  // body에 직접 추가
+  document.body.appendChild(newDiv);
   
   // 생성된 div 요소 반환
   return newDiv;
 }
 
 // 여러 텍스트를 입력받아 여러 DIV를 추가하는 함수
-function addMultipleTextDivs(textsArray, containerId = 'content', className = '') {
+function addMultipleTextDivs(textsArray, className = '') {
   const addedDivs = [];
   
   textsArray.forEach(text => {
-    const div = addTextDiv(text, containerId, className);
+    const div = addTextDiv(text, className);
     addedDivs.push(div);
   });
   
@@ -122,5 +135,5 @@ function addMultipleTextDivs(textsArray, containerId = 'content', className = ''
 // attachAlertToButton("myButton", "버튼이 클릭되었습니다!");
 // showSequentialAlerts(["첫 번째 메시지", "두 번째 메시지", "세 번째 메시지"]);
 // showConditionalAlert(score > 80, "합격입니다!", "불합격입니다.");
-// addTextDiv("안녕하세요!", "container", "greeting");
-// addMultipleTextDivs(["첫 번째 항목", "두 번째 항목", "세 번째 항목"], "list-container", "list-item");
+// addTextDiv("안녕하세요!", "greeting");
+// addMultipleTextDivs(["첫 번째 항목", "두 번째 항목", "세 번째 항목"], "list-item");
